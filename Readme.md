@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
 * Студент: [Мария Хворостянова](https://up.htmlacademy.ru/javascript/16/user/582347).
-* Наставник: `Неизвестно`.
+* Наставник: [Иван Васильев](https://htmlacademy.ru/profile/id35502)
 
 ---
 
