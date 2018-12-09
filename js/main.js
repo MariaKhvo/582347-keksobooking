@@ -116,7 +116,6 @@ var mapElements = mapForm.querySelectorAll('select');
 var mapPinsBlock = document.querySelector('.map__pins');
 var pinMain = mapPinsBlock.querySelector('.map__pin--main');
 var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
-var closeCard = cardTemplate.querySelector('.popup__close');
 var mapElement = document.querySelector('.map');
 var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 var popupPhoto = document.querySelector('template').content.querySelector('.popup__photo');
@@ -250,8 +249,3 @@ var activePage = function () {
 // перетаскивание метки
 
 pinMain.addEventListener('mouseup', activePage);
-
-closeCard.addEventListener('click', function (evt) {
-  evt.preventDefault();
-  cardTemplate.classList.add('hidden');
-});
