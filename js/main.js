@@ -108,32 +108,57 @@ var getArrForOffers = function (numbers) {
   return arrOffers;
 };
 
-
+// поиск элементов в разметке
+var adForm = document.querySelector('.ad-form');
+var mapForm = document.querySelector('.map__filters');
+var adFormElements = adForm.querySelectorAll('fieldset');
+var mapElements = mapForm.querySelectorAll('select');
+var mapPinsBlock = document.querySelector('.map__pins');
+var pinMain = mapPinsBlock.querySelector('.map__pin--main');
+var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
+var closeCard = cardTemplate.querySelector('.popup__close');
 var mapElement = document.querySelector('.map');
+var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
+var popupPhoto = document.querySelector('template').content.querySelector('.popup__photo');
+var filterCollection = document.querySelector('.map__filters-container');
 // mapElement.classList.remove('.map--faded');
 
 // lesson 3 DOM in .map__pin
 
-var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
+var currentPopup;
 
-var createPin = function (avatar, coordinates, title) {
+var closeCurrentPopup = function () {
+  if (currentPopup) {
+    currentPopup.parentElement.removeChild(currentPopup);
+    currentPopup = undefined;
+  }
+};
+
+var createPin = function (avatar, coordinates, title, index) {
   var pinElem = pinTemplate.cloneNode(true);
   pinElem.style.left = (coordinates.x - PIN_WIDTH / 2) + 'px';
   pinElem.style.top = (coordinates.y - PIN_HEIGHT) + 'px';
   pinElem.querySelector('img').src = avatar;
   pinElem.querySelector('img').alt = title;
+  // кликаем по пин
+  pinElem.addEventListener('click', function (evt) {
+    evt.preventDefault();
+    var card = cards[index];
+    var popup = createElemAd(card);
+    closeCurrentPopup();
+    currentPopup = popup;
+    mapElement.insertBefore(popup, filterCollection);
+    popup.classList.remove('hidden');
+  });
   return pinElem;
 };
 
-
 // lesson 4 DOM in .map-pins
-
-var mapPinsBlock = document.querySelector('.map__pins');
 
 var createPins = function (pinsData) {
   var fragment = document.createDocumentFragment();
   for (var k = 0; k < pinsData.length; k++) {
-    fragment.appendChild(createPin(pinsData[k].author.avatar, pinsData[k].location, pinsData[k].offer.title));
+    fragment.appendChild(createPin(pinsData[k].author.avatar, pinsData[k].location, pinsData[k].offer.title, k));
   }
   return fragment;
 };
@@ -142,10 +167,6 @@ var createPins = function (pinsData) {
 
 
 // lesson 5
-
-var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
-var popupPhoto = document.querySelector('template').content.querySelector('.popup__photo');
-var filterCollection = document.querySelector('.map__filters-container');
 
 var createFeatureFragment = function (features) {
   var featureFragment = document.createDocumentFragment();
@@ -170,6 +191,7 @@ var createPhotosFragment = function (arrObject) {
 var createElemAd = function (firstCard) {
   var adElement = cardTemplate.cloneNode(true);
   adElement.querySelector('.popup__title').textContent = firstCard.offer.title;
+  adElement.querySelector('.popup__avatar').src = firstCard.author.avatar;
   adElement.querySelector('.popup__text--address').textContent = firstCard.offer.address;
   adElement.querySelector('.popup__text--price').textContent = firstCard.offer.price + '₽/ночь';
   adElement.querySelector('.popup__type').textContent = titleType[firstCard.offer.type];
@@ -178,22 +200,19 @@ var createElemAd = function (firstCard) {
   adElement.replaceChild(createFeatureFragment(firstCard.offer.features), adElement.querySelector('.popup__features'));
   adElement.querySelector('.popup__description').textContent = firstCard.description;
   adElement.replaceChild(createPhotosFragment(firstCard.offer.photos), adElement.querySelector('.popup__photos'));
+  var closeButton = adElement.querySelector('.popup__close');
+  closeButton.addEventListener('click', function () {
+    closeCurrentPopup();
+  });
+  document.addEventListener('keydown', function (evt) {
+    if (evt.keyCode === 27) {
+      closeCurrentPopup();
+    }
+  }, true);
   return adElement;
 };
 
 var cards = getArrForOffers(totalAds);
-var card = cards[0];
-var popup = createElemAd(card);
-mapElement.insertBefore(popup, filterCollection);
-
-// Обработка событий
-
-// поиск элементов в разметке
-var adForm = document.querySelector('.ad-form');
-var mapForm = document.querySelector('.map__filters');
-var adFormElements = adForm.querySelectorAll('fieldset');
-var mapElements = mapForm.querySelectorAll('select');
-var pinMain = mapPinsBlock.querySelector('.map__pin--main');
 
 // определение координат главной метки с учетом размера метки
 var pinMainY = pinMain.offsetTop + PIN_HEIGHT;
@@ -206,7 +225,7 @@ adressInput.value = pinMainY + ',' + pinMainX;
 adressInput.disabled = true;
 
 // функция неактивного состояни
-//  создание функции с циклом для добавления disabled
+//  создание функции с циклом для добавления disable
 var getDisabledFormElements = function (formElements, status) {
   for (var i = 0; i < formElements.length; i++) {
     formElements[i].disabled = status;
@@ -222,8 +241,8 @@ getDisabledFormElements(mapElements, true);
 var activePage = function () {
   getDisabledFormElements(adFormElements, false);
   getDisabledFormElements(mapElements, false);
-  adForm.classList.remove('.ad-form--disabled');
-  mapElement.classList.remove('.map--faded');
+  adForm.classList.remove('ad-form--disabled');
+  mapElement.classList.remove('map--faded');
   pinMain.removeEventListener('mouseup', activePage);
   mapPinsBlock.appendChild(createPins(getArrForOffers(totalAds)));
 };
@@ -232,7 +251,7 @@ var activePage = function () {
 
 pinMain.addEventListener('mouseup', activePage);
 
-// кликаем по пину
-// при клике на метку появляется карточка, при клике на другой пин, карточка меняется (закрывается первая)
-
-
+closeCard.addEventListener('click', function (evt) {
+  evt.preventDefault();
+  cardTemplate.classList.add('hidden');
+});
