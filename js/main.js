@@ -218,10 +218,10 @@ var pinMainY = pinMain.offsetTop + PIN_HEIGHT;
 var pinMainX = pinMain.offsetLeft + PIN_WIDTH;
 
 // добавление адрес с учетом координат метки
-var adressInput = document.querySelector('[name="address"]');
-adressInput.value = pinMainY + ',' + pinMainX;
+var addressInput = document.querySelector('[name="address"]');
+addressInput.value = pinMainY + ',' + pinMainX;
 // Блокировка ввода данных в инпут адресса от пользователя
-adressInput.disabled = true;
+addressInput.disabled = true;
 
 // функция неактивного состояни
 //  создание функции с циклом для добавления disable
@@ -249,3 +249,32 @@ var activePage = function () {
 // перетаскивание метки
 
 pinMain.addEventListener('mouseup', activePage);
+
+
+// валидация
+// синхронизация количества комнат с количеством гостей
+
+var rooms = document.querySelector('#room_number');
+var capacity = document.querySelector('#capacity');
+var submitButton = document.querySelector('.ad-form__submit');
+
+submitButton.addEventListener('click', function () {
+
+  if (rooms.value === '1' && capacity.value > '1') {
+    capacity.setCustomValidity('Выбрано слишком много гостей');
+  } else if (rooms.value === '1' && capacity.value === '0') {
+    capacity.setCustomValidity('Выберите количество гостей');
+  } else if (rooms.value === '2' && capacity.value > '2') {
+    capacity.setCustomValidity('Выбрано слишком много гостей');
+  } else if (rooms.value === '2' && capacity.value === '0') {
+    capacity.setCustomValidity('Выберите количество гостей');
+  } else if (rooms.value === '3' && capacity.value > '3') {
+    capacity.setCustomValidity('Выбрано слишком много гостей');
+  } else if (rooms.value === '3' && capacity.value === '0') {
+    capacity.setCustomValidity('Выберите количество гостей');
+  } else if (rooms.value === '0' && capacity.value < '100') {
+    capacity.setCustomValidity('Выберите количество гостей');
+  } else {
+    capacity.setCustomValidity('');
+  }
+});
