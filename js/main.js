@@ -221,7 +221,7 @@ var pinMainX = pinMain.offsetLeft + PIN_WIDTH;
 var addressInput = document.querySelector('[name="address"]');
 addressInput.value = pinMainY + ',' + pinMainX;
 // Блокировка ввода данных в инпут адресса от пользователя
-addressInput.disabled = true;
+addressInput.disabled = false;
 
 // функция неактивного состояни
 //  создание функции с циклом для добавления disable
