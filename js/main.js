@@ -54,8 +54,25 @@ var PHOTOS = [
   'http://o0.github.io/assets/images/tokyo/hotel3.jpg'
 ];
 
+var adForm = document.querySelector('.ad-form');
+var mapForm = document.querySelector('.map__filters');
+var adFormElements = adForm.querySelectorAll('fieldset');
+var mapElements = mapForm.querySelectorAll('select');
+var mapPinsBlock = document.querySelector('.map__pins');
+var pinMain = mapPinsBlock.querySelector('.map__pin--main');
+var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
+var mapElement = document.querySelector('.map');
+var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
+var popupPhoto = document.querySelector('template').content.querySelector('.popup__photo');
+var filterCollection = document.querySelector('.map__filters-container');
+
 var PIN_WIDTH = 50;
 var PIN_HEIGHT = 70;
+var MIN_LOCATION_Y = 130;
+var MAX_LOCATION_Y = 630;
+var MIN_LOCATION_X = 0;
+var MAX_LOCATION_X = mapPinsBlock.offsetWidth;
+
 
 var getRandomInRange = function (min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -81,7 +98,7 @@ var getArrForOffers = function (numbers) {
   for (var i = 0; i < numbers; i++) {
     var location = {
       x: getRandomInRange(300, 900),
-      y: getRandomInRange(130, 630)
+      y: getRandomInRange(MIN_LOCATION_Y, MAX_LOCATION_Y)
     };
     var randomType = getRandomElem(TYPES);
     var arrObject = {
@@ -109,17 +126,7 @@ var getArrForOffers = function (numbers) {
 };
 
 // поиск элементов в разметке
-var adForm = document.querySelector('.ad-form');
-var mapForm = document.querySelector('.map__filters');
-var adFormElements = adForm.querySelectorAll('fieldset');
-var mapElements = mapForm.querySelectorAll('select');
-var mapPinsBlock = document.querySelector('.map__pins');
-var pinMain = mapPinsBlock.querySelector('.map__pin--main');
-var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
-var mapElement = document.querySelector('.map');
-var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
-var popupPhoto = document.querySelector('template').content.querySelector('.popup__photo');
-var filterCollection = document.querySelector('.map__filters-container');
+
 // mapElement.classList.remove('.map--faded');
 
 // lesson 3 DOM in .map__pin
@@ -214,12 +221,12 @@ var createElemAd = function (firstCard) {
 var cards = getArrForOffers(totalAds);
 
 // определение координат главной метки с учетом размера метки
-var pinMainY = pinMain.offsetTop + PIN_HEIGHT;
-var pinMainX = pinMain.offsetLeft + PIN_WIDTH;
+// var pinMainY = pinMain.offsetTop + PIN_HEIGHT;
+// var pinMainX = pinMain.offsetLeft + PIN_WIDTH;
 
 // добавление адрес с учетом координат метки
 var addressInput = document.querySelector('[name="address"]');
-addressInput.value = pinMainY + ',' + pinMainX;
+// addressInput.value = pinMainY + ',' + pinMainX;
 // Блокировка ввода данных в инпут адресса от пользователя
 addressInput.disabled = false;
 
@@ -245,6 +252,51 @@ var activePage = function () {
   pinMain.removeEventListener('mouseup', activePage);
   mapPinsBlock.appendChild(createPins(getArrForOffers(totalAds)));
 };
+
+var onPinMainMouseDown = function (evt) {
+  evt.preventDefault();
+  var pinCoordinates = {
+    x: evt.clientX,
+    y: evt.clientY
+  };
+  var onDocumentMouseMove = function (moveEvt) {
+    moveEvt.preventDefault();
+    var shift = {
+      x: pinCoordinates.x - moveEvt.clientX,
+      y: pinCoordinates.y - moveEvt.clientY
+    };
+    pinCoordinates = {
+      x: moveEvt.clientX,
+      y: moveEvt.clientY
+    };
+    var pinMainY = pinMain.offsetTop - shift.y;
+    var pinMainX = pinMain.offsetLeft - shift.x;
+
+    if (pinMainY < (MIN_LOCATION_Y - PIN_HEIGHT)) {
+      pinMainY = MIN_LOCATION_Y - PIN_HEIGHT;
+    } else if (pinMainY > (MAX_LOCATION_Y - PIN_HEIGHT)) {
+      pinMainY = MAX_LOCATION_Y - PIN_HEIGHT;
+    }
+    if (pinMainX < (MIN_LOCATION_X - PIN_WIDTH / 2)) {
+      pinMainX = MIN_LOCATION_X - PIN_WIDTH / 2;
+    } else if (pinMainX > (MAX_LOCATION_X - PIN_WIDTH / 2)) {
+      pinMainX = MAX_LOCATION_X - PIN_WIDTH / 2;
+    }
+    pinMain.style.top = pinMainY + 'px';
+    pinMain.style.left = pinMainX + 'px';
+    addressInput.value = Math.floor((pinMain.offsetLeft + PIN_WIDTH / 2)) + ', ' + Math.floor((pinMain.offsetTop + PIN_HEIGHT));
+  };
+  var onDocumentMouseUp = function (upEvt) {
+    upEvt.preventDefault();
+    addressInput.value = Math.floor((pinMain.offsetLeft + PIN_WIDTH / 2)) + ', ' + Math.floor((pinMain.offsetTop + PIN_HEIGHT));
+    document.removeEventListener('mousemove', onDocumentMouseMove);
+    document.removeEventListener('mouseup', onDocumentMouseUp);
+  };
+  document.addEventListener('mousemove', onDocumentMouseMove);
+  document.addEventListener('mouseup', onDocumentMouseUp);
+};
+
+pinMain.addEventListener('mousedown', onPinMainMouseDown);
 
 // перетаскивание метки
 
