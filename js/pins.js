@@ -3,8 +3,8 @@
 (function () {
   var GAP_X = 25;
   var GAP_Y = 70;
-  var IMG_WIDTH = 40;
-  var IMG_HEIGHT = 40;
+  var PIN_WIDTH = 40;
+  var PIN_HEIGHT = 40;
   var REMOVE_ERROR_TIME = 5000;
   var MAX_OF_ELEM = 5;
 
@@ -25,8 +25,8 @@
       pin.setAttribute('data-index', i);
 
       img.src = places[i].author.avatar;
-      img.width = IMG_WIDTH;
-      img.height = IMG_HEIGHT;
+      img.width = PIN_WIDTH;
+      img.height = PIN_HEIGHT;
       img.draggable = false;
       img.alt = places[i].offer.title;
 
@@ -47,13 +47,13 @@
 
   var setEventForButtons = function (places) {
     for (var i = 0; i < places.length; i++) {
-      allMapPinButtons[i].addEventListener('click', function (e) {
-        var target = e.target;
+      allMapPinButtons[i].addEventListener('click', function (index) {
+        var target = index.target;
         if (target.tagName === 'IMG') {
           target = target.parentNode;
         }
-        var index = target.getAttribute('data-index');
-        window.card.init(index, places);
+        var dataIndex = target.getAttribute('data-index');
+        window.card.init(dataIndex, places);
       });
     }
   };
@@ -69,7 +69,7 @@
 
   var updatePlaces = function (evt) {
     deleteAllPins();
-    var newPlaces = window.compare.getNewPlaces(evt, MAX_OF_ELEM);
+    var newPlaces = window.filter.getNewPlaces(evt, MAX_OF_ELEM);
     renderPlaces(newPlaces);
     setEventForButtons(newPlaces);
     window.card.delete();

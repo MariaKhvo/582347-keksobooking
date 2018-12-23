@@ -5,7 +5,7 @@
   var MID_HOUSING_PRICE = 10000;
   var HIGH_HOUSING_PRICE = 50000;
 
-  window.compare = {
+  window.filter = {
     getNewPlaces: function (evt, max) {
       var filteredPins = {};
       var selects = evt.currentTarget.querySelectorAll('.map__filter');

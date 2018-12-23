@@ -10,8 +10,8 @@
   };
   var MAIN_PIN_GAP_X = 32;
   var MAIN_PIN_GAP_Y = 84;
-  var LIMIT_TOP_Y = 150;
-  var LIMIT_BOTTOM_Y = 500;
+  var LIMIT_TOP_Y = 130;
+  var LIMIT_BOTTOM_Y = 630;
 
   var adFormFieldsets = document.querySelectorAll('.ad-form fieldset');
   var adForm = document.querySelector('.ad-form');
@@ -88,23 +88,61 @@
 
   setCoordsToInput();
 
+  var success = document.querySelector('.success');
+  var closeSuccessMessage = function () {
+    success.classList.add('hidden');
+    success.removeEventListener('click', onSuccessMessageClick);
+    document.removeEventListener('keydown', onSuccessEscPress);
+  };
+
+  var onSuccessMessageClick = function () {
+    closeSuccessMessage();
+  };
+
+  var onSuccessEscPress = function (evt) {
+    if (window.util.isEscPressed(evt)) {
+      closeSuccessMessage();
+    }
+  };
+
+  var onSuccessUpload = function () {
+    success.classList.remove('hidden');
+    success.addEventListener('click', onSuccessMessageClick);
+    document.addEventListener('keydown', onSuccessEscPress);
+  };
+
+  var errorMessage = document.querySelector('.error');
+  var errorButton = errorMessage.querySelector('.error__button');
+  var closeErrorMessage = function () {
+    errorMessage.classList.add('hidden');
+    errorMessage.removeEventListener('click', onErrorMessageClick);
+    document.removeEventListener('keydown', onErrorEscPress);
+  };
+
+  var onErrorMessageClick = function () {
+    closeErrorMessage();
+  };
+
+  var onErrorEscPress = function (evt) {
+    if (window.util.isEscPressed(evt)) {
+      closeSuccessMessage();
+    }
+  };
+
+  var onErrorsUpload = function () {
+    errorMessage.classList.remove('hidden');
+    errorMessage.addEventListener('click', onErrorMessageClick);
+    errorButton.addEventListener('click', onErrorMessageClick);
+    document.addEventListener('keydown', onErrorEscPress);
+  };
+
   adForm.addEventListener('submit', function (evt) {
-    window.backend.save(new FormData(adForm), function () {
-      adForm.reset();
-      resetAdForm();
-      resetFilterForm();
-      setMessageSuccess();
-    });
+    window.backend.save(new FormData(adForm), onSuccessUpload, onErrorsUpload);
+    adForm.reset();
+    resetAdForm();
+    resetFilterForm();
     evt.preventDefault();
   });
-
-  var setMessageSuccess = function () {
-    var messageSuccess = document.querySelector('.success');
-    messageSuccess.classList.remove('hidden');
-    messageSuccess.addEventListener('click', function () {
-      messageSuccess.classList.add('hidden');
-    });
-  };
 
   var resetAdForm = function () {
     setFieldsetsTrigger(true);

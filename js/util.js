@@ -5,6 +5,7 @@
   var DEBOUNCE_INTERVAL = 500;
 
   var lastTimeout;
+
   window.util = {
     onPopupEscPress: function (evt) {
       if (evt.keyCode === ESC_KEYCODE) {
@@ -16,7 +17,9 @@
         window.clearTimeout(lastTimeout);
       }
       lastTimeout = window.setTimeout(fun, DEBOUNCE_INTERVAL);
-    }
+    },
+    isEscPressed: function (evt) {
+      return evt.keyCode === ESC_KEYCODE;
+    },
   };
 })();
-
