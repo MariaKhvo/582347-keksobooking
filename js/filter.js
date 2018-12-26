@@ -1,7 +1,7 @@
 'use strict';
 
 (function () {
-  var LOW_HOUSIN_PRICE = 0;
+  var LOW_HOUSING_PRICE = 0;
   var MID_HOUSING_PRICE = 10000;
   var HIGH_HOUSING_PRICE = 50000;
 
@@ -33,7 +33,7 @@
 
         switch (filteredPins['housing-price']) {
           case 'low':
-            valuePrice = places[index].offer.price > LOW_HOUSIN_PRICE && places[index].offer.price < MID_HOUSING_PRICE;
+            valuePrice = places[index].offer.price > LOW_HOUSING_PRICE && places[index].offer.price < MID_HOUSING_PRICE;
             break;
           case 'middle':
             valuePrice = places[index].offer.price >= MID_HOUSING_PRICE && places[index].offer.price <= HIGH_HOUSING_PRICE;
@@ -55,7 +55,7 @@
       };
 
       var filteredFeatures = function (element, index, places) {
-        var isfeatures;
+        var isFeatures;
         var counter = 0;
 
         if (filteredPins.checkboxes.length > 0) {
@@ -69,13 +69,13 @@
           }
 
           if (counter === filteredPins.checkboxes.length) {
-            isfeatures = places[index];
+            isFeatures = places[index];
           }
 
         } else {
-          isfeatures = true;
+          isFeatures = true;
         }
-        return isfeatures;
+        return isFeatures;
       };
 
       var filteredAd = function (element, index, places) {

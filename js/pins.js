@@ -75,11 +75,11 @@
     window.card.delete();
   };
 
-  var successHandler = function (places) {
+  var successElement = function (places) {
     window.places = places;
   };
 
-  var errorHandler = function (errorMessage) {
+  var errorElement = function (errorMessage) {
     var node = document.createElement('div');
     node.classList.add('error');
     node.textContent = errorMessage;
@@ -89,7 +89,7 @@
     }, REMOVE_ERROR_TIME);
   };
 
-  window.backend.load(successHandler, errorHandler);
+  window.backend.load(successElement, errorElement);
   window.pins = {
     init: initPlaces,
     setEventForButtons: setEventForButtons,

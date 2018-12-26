@@ -53,11 +53,11 @@
     adElement.querySelector('.popup__type').textContent = getValueObject(AccomodationType, places[index].offer.type);
     adElement.querySelector('.popup__text--capacity').textContent = offer.rooms + ' комнат для ' + offer.guests + ' гостей';
     adElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + offer.checkin + ', выезд до ' + offer.checkout;
-    var featuresNode = adElement.querySelector('.popup__features');
-    while (featuresNode.firstChild) {
-      featuresNode.removeChild(featuresNode.firstChild);
+    var featuresElement = adElement.querySelector('.popup__features');
+    while (featuresElement.firstChild) {
+      featuresElement.removeChild(featuresElement.firstChild);
     }
-    featuresNode.appendChild(addMapCardFeatures(index, places));
+    featuresElement.appendChild(addMapCardFeatures(index, places));
     adElement.querySelector('.popup__description').textContent = offer.description;
     createPhotosFragment(index, places);
     adElement.querySelector('.popup__avatar').src = author.avatar;

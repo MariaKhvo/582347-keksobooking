@@ -16,9 +16,9 @@
   var adFormFieldsets = document.querySelectorAll('.ad-form fieldset');
   var adForm = document.querySelector('.ad-form');
 
-  var setFieldsetsTrigger = function (trigerBoolean) {
+  var setFieldsetsTrigger = function (triggerBoolean) {
     for (var i = 0; i < adFormFieldsets.length; i++) {
-      adFormFieldsets[i].disabled = trigerBoolean;
+      adFormFieldsets[i].disabled = triggerBoolean;
     }
   };
   setFieldsetsTrigger(true);

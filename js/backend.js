@@ -25,7 +25,7 @@
           break;
 
         default:
-          error = 'Cтатус ответа: : ' + xhr.status + ' ' + xhr.statusText;
+          error = 'Статус ответа: ' + xhr.status + ' ' + xhr.statusText;
       }
       if (error) {
         onError(error);
